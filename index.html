@@ -54,11 +54,11 @@
             Introduction
           </h2>
           <p>
-            A* search is a pathfinding algorithm that is often used in video games. 
-            What differentiates A* search from other pathfinding algorithms is that it is an informed search rather than a greedy algorithm.
+            A* search is a pathfinding algorithm that is often used in video games due to having desirable properties in a pathfinding algorithm.
+            In particular, what differentiates A* search from other pathfinding algorithms is that it is an informed search rather than a greedy algorithm.
           </p>
           <p>
-            In this tutorial, we will walk through another pathfinding algorithm, Dijkstra's algorithm, and then compare it to A* search to understand how A* search is an informed pathfinding algorithm. 
+            In this explorable explanation, we will walk through another closely related pathfinding algorithm, Dijkstra's algorithm, and then compare it to A* search in order to understand how the informed properties of A* search allows for quicker search times, and other properties that make it more appealing than Dijkstra's. We assume prior experience of more introductory topics, such as breadth-first search (BFS) and general data structures such as nodes and graphs. If these aren't ringing a bell, we recommend doing some quick review prior to looking at the information below.
           </p>
         </div>
 
@@ -67,34 +67,35 @@
             Dijkstra's Algorithm
           </h2>
           <p>
-            Before getting into A* search, here are the basics of Dijkstra's algorithm. 
+            Before getting into A* search, it's important to understand the basic idea of Dijkstra's algorithm. To the right, we see an animated process of Dijkstra's algorithm. Note how it closely resembles a BFS of the grid structure we're examining. Looking at the pseudo-code below, you should be able to see that it actually <i> is </i> just a modified BFS in which you keep track of the minimum weighted path between a source and target node. 
           </p>
           <div class="codebox">
             <pre>   
               function Dijkstra(Graph, source, target):
-              create vertex set openSet
-            
-              for each vertex v in Graph:
-                distance[v] = Infinity
-                cameFrom[v] = undefined
-                add v to openSet
-            
-              distance[source] = 0
-            
-              while openSet is not empty:
-                u = vertex in openSet with min distance[u]
-                if u is target:
-                  return reconstruct_path(cameFrom, u)
-            
-                remove u from openSet
-            
-                for each neighbor v of u s.t. v in openSet:
-                  alt = distance[u] + distance_heuristic(u, v)
-                  if alt < distance[v]:
-                    distance[v] = alt
-                    cameFrom[v] = u
-            
-              return [] // No solution found if it exits here
+                create vertex set openSet
+              
+                for each vertex v in Graph:
+                  distance[v] = Infinity
+                  cameFrom[v] = undefined
+                  add v to openSet
+              
+                distance[source] = 0
+              
+                while openSet is not empty:
+                  u = vertex in openSet with min distance[u]
+                  if u is target:
+                    return reconstruct_path(cameFrom, u)
+              
+                  remove u from openSet
+              
+                  for each neighbor v of u s.t. v in openSet:<pre id="highlightme">
+                    // This portion is the most different from standard BFS
+                    alt = distance[u] + heuristic(u, v)
+                    if alt < distance[v]:
+                      distance[v] = alt
+                      cameFrom[v] = u
+                  </pre>
+                return [] // No solution found if it exits here
             </pre>
           </div>
           <br>
@@ -110,25 +111,25 @@
             A* Search
           </h2>
           <p>
-            And now, here's some A*. 
+            As mentioned before, A* is closely related to Dijkstra. One of the main differences is that it uses a <i>heuristic</i> in order to make an informed choice about the path it takes. Take a look at the animation to the right, and the pseudo-code below, in order to get more of a feel for A*. We'll talk about the heuristic function later, so don't worry too much about that right now.
           </p>
           <div class="codebox">
-            <pre id="astar">   
+            <pre>   
               function A_Star(source, target, h)
-              openSet = {source}
-              cameFrom = an empty map
-          
-              // For node n, distance[n] is the cost of the cheapest path from source
-              // to n currently known.
-              distance = map with default value of Infinity
-              distance[source] = 0
-          
-              // For node n, estimatedDistance[n] = distance[n] + distance_heuristic(n, target).
-              estimatedDistance = map with default value of Infinity
-              estimatedDistance[source] = distance_heuristic(source, target)
-          
-              while openSet is not empty
-                  current = the node in openSet having the lowest estimatedDistance[] value
+                openSet = {source}
+                cameFrom = an empty map
+            
+                // For node n, distance[n] is the cost of the cheapest path from source
+                // to n currently known.
+                distance = map with default value of Infinity
+                distance[source] = 0
+            
+                // For node n, estimatedDistance[n] = distance[n] + heuristic(n, target).
+                estimatedDistance = map with default value of Infinity
+                estimatedDistance[source] = heuristic(source, target)
+            
+                while openSet is not empty
+                  current = node in openSet having the lowest estimatedDistance[]
                   if current = target
                       return reconstruct_path(cameFrom, current)
           
@@ -138,11 +139,12 @@
                       if tentative_distance < distance[neighbor]
                           cameFrom[neighbor] = current
                           distance[neighbor] = tentative_distance
-                          estimatedDistance[neighbor] = distance[neighbor] + distance_heuristic(neighbor, target)
+                          estimatedDistance[neighbor] = distance[neighbor]
+                          estimatedDistance[neighbor] += heuristic(neighbor, target)
                           if neighbor not in openSet
                               openSet.add(neighbor)
           
-              return failure
+                return []
             </pre>
           </div>
           <br>
@@ -158,7 +160,7 @@
               Comparing Dijkstra's with A*
             </h2>
             <p>
-              Both Dijkstra and A* Search are pathfinding algorithms. But how do they compare? If you look at the pseudocode, you'll notice a similarity.
+              Both Dijkstra and A* Search are pathfinding algorithms, and we said that Dijkstra's is very closely related to A*. This naturally leads to the question: how do they compare? If you look at the pseudocode, you'll notice a <i>very</i> strong similarity between the highlighted sections.
             </p>
             <div class="container">
                 <div class="row" id="comp-code">
@@ -168,20 +170,22 @@
                       <br>
                       <div class="codebox-mini">
                           <pre>   
-                            while openSet is not empty:
-                              u = vertex in openSet with min distance[u]
-                              if u is target:
-                                return reconstruct_path(cameFrom, u)
-                          
-                              remove u from openSet
-                          
-                              for each neighbor v of u s.t. v in openSet:
-                                alt = distance[u] + distance_heuristic(u, v)
-                                if alt < distance[v]:
-                                  distance[v] = alt
-                                  cameFrom[v] = u
-                          
-                            return [] // No solution found if it exits here
+while openSet is not empty:
+  u = vertex in openSet with min distance[u]
+  if u is target:
+    return reconstruct_path(cameFrom, u)
+
+  remove u from openSet
+  <pre id="highlightme">
+  for each neighbor v of u s.t. v in openSet:
+    alt = distance[u] + heuristic(u, v)
+
+    if alt < distance[v]:
+      distance[v] = alt
+      cameFrom[v] = u
+  </pre>
+
+return [] // No solution found if it exits here
                           </pre>
                       </div>
                    </div>
@@ -190,28 +194,41 @@
                       <br>
                       <br>
                       <div class="codebox-mini">
-                          <pre>   
-                            while openSet is not empty
-                            current = the node in openSet having the lowest estimatedDistance[] value
-                            if current = target
-                                return reconstruct_path(cameFrom, current)
-                    
-                            openSet.Remove(current)
-                            for each neighbor of current
-                                tentative_distance = distance[current] + d(current, neighbor)
-                                if tentative_distance < distance[neighbor]
-                                    cameFrom[neighbor] = current
-                                    distance[neighbor] = tentative_distance
-                                    estimatedDistance[neighbor] = distance[neighbor] + distance_heuristic(neighbor, target)
-                                    if neighbor not in openSet
-                                        openSet.add(neighbor)
-                      
-                            return failure
+                          <pre>
+
+
+<pre id="highlightme">
+
+for each neighbor of current
+  tentative_distance = distance[current]
+  tentative_distance += d(current, neighbor)
+
+  if tentative_distance < distance[neighbor]
+      cameFrom[neighbor] = current
+      distance[neighbor] = tentative_distance
+      estimatedDistance[neighbor] = distance[neighbor]
+      hDist = heuristic(neighbor, target) 
+      estimatedDistance[neighbor] += hDist
+
+      if neighbor not in openSet
+          openSet.add(neighbor)
+</pre>
+return []
                           </pre>
                       </div>
                   </div>
                 </div>
             </div>
+
+
+            <br>
+            <p>
+            Looking at the main loops of A* and Dijkstra's highlighted above, it should be clear to see that A* <i>is</i> Dijkstra's with the simple addition of a distance heuristic.
+          </p>
+            
+            <p>
+            Using a good heuristic is important, as so long as the heuristic is <i>admissible</i> (meaning it never overestimates the distance to the goal), A* is guaranteed to return a least-cost path between your source and target nodes while still searching through less space than Dijkstra's.
+          </p>
         </div>
 
         <br>
@@ -221,6 +238,15 @@
               Interactive Comparison
             </h2>
             <br>
+
+            <p>
+              Below is an interactive comparison between Dijkstra's and A*. The source node is dark blue, while the target node is dark red. Gray nodes represent obstacles in the path. After running one of the pathfinding algorithms, the final path will be shown, with nodes that were included in the search changing colors.
+            </p>
+
+            <p>
+              Play around with this interactive tool to create different structures and gain more intuition between A* and Dijkstra's. Clicking will let you modify the obstacles, as well as move around the start and target node.
+            </p>
+
             <div class="d-flex justify-content-center" id="grid">
             </div>
             <br>
@@ -230,6 +256,29 @@
                 <button type="button" id="resetButton">Reset</button>
             </div>
         </div>
+
+        <br>
+        <br>
+        <div class="post-preview">
+            <h2 class="post-title">
+              What's the Point?
+            </h2>        
+            <p>
+              If you've gotten to this point, you should have a solid understanding and intuition about A* and its relation to Dijkstra's, but might not understand why it matters.
+            </p>
+
+            <p>
+              As you've seen, as long as you use an admissible heuristic, A* will return a least-cost path while searching through less space than Dijkstra's (meaning it runs in less time). In games, this is particularly important as your code needs to run quickly due to needing to refresh the visual output of the game at least 60 times per second.
+            </p>
+
+            <p>
+              However, apart from just general optimization, A* is useful because it's a much more <i>human</i> approach to how you would expect someone to path or search through space. This means it can be used to make computer-controlled characters (i.e. NPCs) appear more human-like in how they move, or alternatively appear more realistic in how they search through space for a hidden character. 
+            </p>
+
+            <p>
+              Overall, A* is a very useful algorithm for pathfinding, and has a lot of desirable qualities for use in the development process of games. We hope that this has allowed you to understand more about A* and its relation to more common algorithms, like BFS and Dijkstra's, while also showcasing why A* is so popular in the game industry.
+            </p>
+          </div>
 
       </div>
     </div>

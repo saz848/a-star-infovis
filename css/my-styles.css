@@ -19,7 +19,7 @@
     font-size:0.7em;
     text-align: left; 
     padding: 10px;
-    white-space: pre-line;
+    white-space: pre;
     /* You could also put all sorts of styling here, like different font, color, underline, etc. for the code. */
 }
 
@@ -53,11 +53,17 @@
     margin-right: 20px; 
 }
 
+#highlightme {
+    background-color: #b2b2d2;
+    font-size:1em;
+
+}
+
 .codebox-mini pre {
     font-size:0.5em;
     text-align: left; 
     padding: 10px;
-    white-space: pre-line;
+    white-space: pre;
 }
 
 #comp-code {
