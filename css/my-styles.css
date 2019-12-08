@@ -1,0 +1,70 @@
+.codebox {
+    /* Below are styles for the codebox (not the code itself) */
+    border:1px solid black;
+    background-color:#EEEEFF;
+    width:700px;
+    overflow:auto;    
+    padding:5px;
+    margin: auto; 
+}
+.codebox pre {
+    /* Styles in here affect the text of the codebox */
+    font-size:0.7em;
+    text-align: left; 
+    /* You could also put all sorts of styling here, like different font, color, underline, etc. for the code. */
+}
+
+.codebox #astar {
+    /* Styles in here affect the text of the codebox */
+    font-size:0.7em;
+    text-align: left; 
+    padding: 10px;
+    white-space: pre-line;
+    /* You could also put all sorts of styling here, like different font, color, underline, etc. for the code. */
+}
+
+.dijkstra-mini {
+    position: relative;
+    left: 775px; 
+    top: -450px; 
+}
+
+.dijkstra-mini img {
+    position: absolute; 
+}
+
+.astar-mini {
+    position: relative;
+    left: 775px; 
+    top: -450px; 
+}
+
+.astar-mini img {
+    position: absolute; 
+}
+
+.codebox-mini {
+    /* Below are styles for the codebox (not the code itself) */
+    border:1px solid black;
+    background-color:#EEEEFF;
+    width:350px;
+    overflow:auto;    
+    padding:5px;
+    margin-right: 20px; 
+}
+
+.codebox-mini pre {
+    font-size:0.5em;
+    text-align: left; 
+    padding: 10px;
+    white-space: pre-line;
+}
+
+#comp-code {
+    position: relative; 
+}
+
+button {
+    margin-left: 5px;
+    margin-right: 5px; 
+}

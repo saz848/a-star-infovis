@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Clean Blog - Start Bootstrap Theme</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom fonts for this template -->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="js/jquery-3.4.1.min.js"></script>
+
+  <!-- Custom styles for this template -->
+  <link href="css/clean-blog.min.css" rel="stylesheet">
+  <link href="css/my-styles.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <!-- Page Header -->
+  <header class="masthead" style="background-image: url('img/home-bg.jpg')">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="site-heading">
+            <h1>A* Search</h1>
+            <span class="subheading">By Sarah Ahmad and David Hofferber</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+
+        <div class="post-preview">
+          <h2 class="post-title">
+            Introduction
+          </h2>
+          <p>
+            A* search is a pathfinding algorithm that is often used in video games. 
+            What differentiates A* search from other pathfinding algorithms is that it is an informed search rather than a greedy algorithm.
+          </p>
+          <p>
+            In this tutorial, we will walk through another pathfinding algorithm, Dijkstra's algorithm, and then compare it to A* search to understand how A* search is an informed pathfinding algorithm. 
+          </p>
+        </div>
+
+        <div class="post-preview">
+          <h2 class="post-title">
+            Dijkstra's Algorithm
+          </h2>
+          <p>
+            Before getting into A* search, here are the basics of Dijkstra's algorithm. 
+          </p>
+          <div class="codebox">
+            <pre>   
+              function Dijkstra(Graph, source, target):
+              create vertex set openSet
+            
+              for each vertex v in Graph:
+                distance[v] = Infinity
+                cameFrom[v] = undefined
+                add v to openSet
+            
+              distance[source] = 0
+            
+              while openSet is not empty:
+                u = vertex in openSet with min distance[u]
+                if u is target:
+                  return reconstruct_path(cameFrom, u)
+            
+                remove u from openSet
+            
+                for each neighbor v of u s.t. v in openSet:
+                  alt = distance[u] + distance_heuristic(u, v)
+                  if alt < distance[v]:
+                    distance[v] = alt
+                    cameFrom[v] = u
+            
+              return [] // No solution found if it exits here
+            </pre>
+          </div>
+          <br>
+          <div class="dijkstra-mini">
+            <img src="svg/blank_sg-01.svg" width=30%/>
+            <img src="svg/step1_dijkstra.svg" width=30%/>
+            <img src="svg/step2_dijkstra.svg" width=30%/>
+          </div>
+        </div>
+
+        <div class="post-preview">
+          <h2 class="post-title">
+            A* Search
+          </h2>
+          <p>
+            And now, here's some A*. 
+          </p>
+          <div class="codebox">
+            <pre id="astar">   
+              function A_Star(source, target, h)
+              openSet = {source}
+              cameFrom = an empty map
+          
+              // For node n, distance[n] is the cost of the cheapest path from source
+              // to n currently known.
+              distance = map with default value of Infinity
+              distance[source] = 0
+          
+              // For node n, estimatedDistance[n] = distance[n] + distance_heuristic(n, target).
+              estimatedDistance = map with default value of Infinity
+              estimatedDistance[source] = distance_heuristic(source, target)
+          
+              while openSet is not empty
+                  current = the node in openSet having the lowest estimatedDistance[] value
+                  if current = target
+                      return reconstruct_path(cameFrom, current)
+          
+                  openSet.Remove(current)
+                  for each neighbor of current
+                      tentative_distance = distance[current] + d(current, neighbor)
+                      if tentative_distance < distance[neighbor]
+                          cameFrom[neighbor] = current
+                          distance[neighbor] = tentative_distance
+                          estimatedDistance[neighbor] = distance[neighbor] + distance_heuristic(neighbor, target)
+                          if neighbor not in openSet
+                              openSet.add(neighbor)
+          
+              return failure
+            </pre>
+          </div>
+          <br>
+          <div class="astar-mini">
+            <img src="svg/blank_sg-01.svg" width=30%/>
+            <img src="svg/step1_astar.svg" width=30%/>
+            <img src="svg/step2_astar.svg" width=30%/>
+          </div>
+        </div>
+
+        <div class="post-preview">
+            <h2 class="post-title">
+              Comparing Dijkstra's with A*
+            </h2>
+            <p>
+              Both Dijkstra and A* Search are pathfinding algorithms. But how do they compare? If you look at the pseudocode, you'll notice a similarity.
+            </p>
+            <div class="container">
+                <div class="row" id="comp-code">
+                   <div class="col-xs-6 col-sm-6 col-md-6">
+                      Dijkstra's
+                      <br>
+                      <br>
+                      <div class="codebox-mini">
+                          <pre>   
+                            while openSet is not empty:
+                              u = vertex in openSet with min distance[u]
+                              if u is target:
+                                return reconstruct_path(cameFrom, u)
+                          
+                              remove u from openSet
+                          
+                              for each neighbor v of u s.t. v in openSet:
+                                alt = distance[u] + distance_heuristic(u, v)
+                                if alt < distance[v]:
+                                  distance[v] = alt
+                                  cameFrom[v] = u
+                          
+                            return [] // No solution found if it exits here
+                          </pre>
+                      </div>
+                   </div>
+                   <div class="col-xs-6 col-sm-6 col-md-6">
+                      A* Search
+                      <br>
+                      <br>
+                      <div class="codebox-mini">
+                          <pre>   
+                            while openSet is not empty
+                            current = the node in openSet having the lowest estimatedDistance[] value
+                            if current = target
+                                return reconstruct_path(cameFrom, current)
+                    
+                            openSet.Remove(current)
+                            for each neighbor of current
+                                tentative_distance = distance[current] + d(current, neighbor)
+                                if tentative_distance < distance[neighbor]
+                                    cameFrom[neighbor] = current
+                                    distance[neighbor] = tentative_distance
+                                    estimatedDistance[neighbor] = distance[neighbor] + distance_heuristic(neighbor, target)
+                                    if neighbor not in openSet
+                                        openSet.add(neighbor)
+                      
+                            return failure
+                          </pre>
+                      </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="post-preview">
+            <h2 class="post-title">
+              Interactive Comparison
+            </h2>
+            <br>
+            <div class="d-flex justify-content-center" id="grid">
+            </div>
+            <br>
+            <div class="d-flex justify-content-center">
+                <button type="button" id="runDijkstra">Run Dijkstra</button>
+                <button type="button" id="runAStar">Run A Star</button>
+                <button type="button" id="resetButton">Reset</button>
+            </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Custom scripts for this template -->
+  <script src="js/clean-blog.min.js"></script>
+  <script src="js/animation.js"></script>
+
+</body>
+
+</html>
