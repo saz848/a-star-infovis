@@ -161,7 +161,34 @@ class Node {
       .enter().append("g")
       .attr("class", "row");
   
-  
+  function removeDuplicates(x, y, gridData, isStart){
+    console.log("remove dupe");
+    console.log(isStart);
+    console.log(x);
+    console.log(y);
+
+    var ix = (x-1)/50;
+    var iy = (y-1)/50;
+    for(var i =0; i < gridData.length; i++){
+      for( var j = 0; j < gridData[0].length; j++){
+        if(isStart){
+          if(gridData[i][j]["click"] == 1 && (j != ix || i != iy)){
+            console.log(i + " " +  j + ": " + ix + " " + iy);            
+            gridData[i][j]["click"] = 0;
+          }
+        }else{
+          if(gridData[i][j]["click"] == 2 && (j != ix || i != iy)){
+            gridData[i][j]["click"] = 0;
+          }
+        }
+          }
+      }
+
+      updateGrid(gridData);
+
+    }
+
+
   var column = row.selectAll(".square")
       .data(function(d) { return d; })
       .enter().append("rect")
@@ -176,10 +203,20 @@ class Node {
       if ((d.click)%4 == 3 ) { return"#838690"; }})
       .style("stroke", "#222")
       .on('click', function(d) {
+
+        var callRemove = false;
       d.click = (d.click + 1) % 4;
-      if ((d.click)%4 == 0 ) { d3.select(this).style("fill","#d1e5f0"); }
-      if ((d.click)%4 == 1 ) { d3.select(this).style("fill","#2166ac"); }
-      if ((d.click)%4 == 2 ) { d3.select(this).style("fill","#b2182b"); }
+      if ((d.click)%4 == 0 ) { 
+        d3.select(this).style("fill","#d1e5f0");  }
+      // Start
+      if ((d.click)%4 == 1 ) { 
+        d3.select(this).style("fill","#2166ac");         
+        removeDuplicates(d.x, d.y, gridData, true); }
+      // End
+      if ((d.click)%4 == 2 ) {
+        d3.select(this).style("fill","#b2182b"); 
+        removeDuplicates(d.x, d.y, gridData, false);  
+        }
       if ((d.click)%4 == 3 ) { d3.select(this).style("fill","#838690"); }
   
       console.log(gridData);
@@ -406,7 +443,7 @@ class Node {
             neighborNode = nodes[v]
             targetNode = nodes[target]
   
-            if(neighborNode.value[0] != targetNode.value[0] && neighborNode.value[1] != targetNode.value[1]){
+            if(neighborNode.value[0] != targetNode.value[0] || neighborNode.value[1] != targetNode.value[1]){
               gridData[(neighborNode.value[1]-1)/50][(neighborNode.value[0]-1)/50]['click'] = 7
             }
   
@@ -439,7 +476,7 @@ class Node {
     var y1 = v.value[1];
     var y2 = u.value[1];
   
-    return Math.sqrt( Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2) ) + (Math.pow((x1-x2), 2)) + (Math.pow((y1-y2), 2)) ;
+    return Math.sqrt( Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2) ); //+ (Math.pow((x1-x2), 2)) + (Math.pow((y1-y2), 2)) ;
   }
   
   function A_star(gridData){
@@ -536,7 +573,7 @@ class Node {
               neighborNode = nodes[v]
               targetNode = nodes[target]
   
-            if(neighborNode.value[0] != targetNode.value[0] && neighborNode.value[1] != targetNode.value[1]){
+            if(neighborNode.value[0] != targetNode.value[0] || neighborNode.value[1] != targetNode.value[1]){
               gridData[(neighborNode.value[1]-1)/50][(neighborNode.value[0]-1)/50]['click'] = 7
             }
   
