@@ -162,6 +162,8 @@ class Node {
       .attr("class", "row");
   
   function removeDuplicates(x, y, gridData, isStart){
+    // Not working super well for UI/UX purposes atm
+    return null;
     console.log("remove dupe");
     console.log(isStart);
     console.log(x);
